@@ -14,7 +14,7 @@ class AlbumsService {
   }
 
   async getAllAlbums() {
-    const albums = await dbContext.Albums.find().populate('creator')
+    const albums = await dbContext.Albums.find().sort('-createdAt').populate('creator')
     return albums
   }
 
