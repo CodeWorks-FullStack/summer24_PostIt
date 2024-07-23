@@ -8,15 +8,18 @@ import { AppState } from '../AppState.js';
 import CreatePictureForm from '../components/CreatePictureForm.vue';
 import ModalWrapper from '../components/ModalWrapper.vue';
 import { picturesService } from '../services/PicturesService.js';
+import { albumMembersService } from '../services/AlbumMembersService.js';
 
 const route = useRoute()
 
 const album = computed(()=> AppState.activeAlbum)
 const albumPictures = computed(()=> AppState.albumPictures)
+const albumMemberProfiles = computed(()=> AppState.albumProfiles)
 
 onMounted(()=>{
   getAlbumById()
   getAlbumPictures()
+  getAlbumMembersForAlbum()
 })
 
 
@@ -34,6 +37,15 @@ async function getAlbumPictures(){
     await picturesService.getAlbumPictures(route.params.albumId)
   } catch (error) {
     Pop.toast("Could not get album pictures 👺", 'error', 'bottom')
+    logger.error(error)
+  }
+}
+
+async function getAlbumMembersForAlbum(){
+  try {
+    await albumMembersService.getAlbumMembersForAlbum(route.params.albumId)
+  } catch (error) {
+    Pop.toast("Could not get album members 👺", 'error', 'center')
     logger.error(error)
   }
 }
@@ -66,7 +78,14 @@ async function getAlbumPictures(){
 
     <section class="row">
       <div class="col-md-3">
-        Album Members Side
+        <section class="row g-2">
+
+          <!-- SECTION album member profile pictures -->
+          <div class="col-4" v-for="albumMember in albumMemberProfiles" :key="albumMember.id">
+            <img class="img-fluid"  :src="albumMember.profile.picture" alt="it's a face">
+          </div>
+
+        </section>
       </div>
       <div class="col-md-9">
         <section class="masonry">

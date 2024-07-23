@@ -13,7 +13,7 @@ defineProps({album: Album})
      <div class="card-body bg-dark rounded " style="--bs-bg-opacity: .5">
        <div class="border-start border-2 border-primary ps-2">
          <h4 class="text-light">{{ album.title }}</h4>
-        <div class="text-secondary">
+        <div class="text-secondary" v-if="album.creator">
           <img class="album-creator-picture me-1" :src="album.creator.picture" alt="">
           <span>{{ album.creator.name }}</span>
         </div>

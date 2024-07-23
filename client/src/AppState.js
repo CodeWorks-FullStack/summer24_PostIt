@@ -1,6 +1,7 @@
 import { reactive } from 'vue'
 import { Album } from './models/Album.js'
 import { Picture } from './models/Picture.js'
+import { AlbumMember, AlbumMemberAlbum, AlbumMemberProfile } from './models/AlbumMember.js'
 
 // NOTE AppState is a reactive object to contain app level data
 export const AppState = reactive({
@@ -16,7 +17,13 @@ export const AppState = reactive({
   activeAlbum: null,
 
   /** @type {Picture[]} */
-  albumPictures: []
+  albumPictures: [],
+
+  /** @type {AlbumMemberProfile[]} */
+  albumProfiles: [],
+
+  /** @type {AlbumMemberAlbum[]} */
+  accountAlbums: []
 })
 
 // NOTE be very careful of built in class types like the following
