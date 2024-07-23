@@ -11,6 +11,7 @@ class AlbumsService {
     logger.log('✨🖼️📡', response.data)
     const newAlbum = new Album(response.data)
     AppState.albums.unshift(newAlbum)
+    return newAlbum
   }
   async getAlbumById(albumId) {
     AppState.activeAlbum = null

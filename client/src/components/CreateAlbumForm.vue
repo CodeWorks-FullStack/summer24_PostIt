@@ -4,6 +4,10 @@ import Pop from '../utils/Pop.js';
 import { logger } from '../utils/Logger.js';
 import { albumsService } from '../services/AlbumsService.js';
 import { Modal } from 'bootstrap';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute() // this is your location in the app, think url
+const router = useRouter() // is the vehicle that moves you from place to place
 
 
 const albumData = ref({
@@ -15,10 +19,11 @@ category: ''
 
 async function createAlbum(){
   try {
-    await albumsService.createAlbum(albumData.value)
-    Pop.success('You did it yay! you created an album')
+    const newAlbum = await albumsService.createAlbum(albumData.value)
+    Pop.success(`You did it yay! you created ${newAlbum.title} `)
     resetForm()
     Modal.getOrCreateInstance('#create-album-modal').hide()
+    router.push({name: 'Album Details', params: {albumId: newAlbum.id}})
   } catch (error) {
     Pop.toast('Could not create album', 'error', 'center-start')
     logger.error(error)
