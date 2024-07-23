@@ -1,12 +1,16 @@
 <script setup>
+import { useRoute } from 'vue-router';
 import { AppState } from './AppState'
 import Navbar from './components/Navbar.vue'
+
+const route = useRoute()
 
 
 </script>
 
 <template>
   <header>
+    <!-- {{ route.name }} -->
     <Navbar />
   </header>
   <main>
