@@ -10,9 +10,18 @@ export const AlbumSchema = new Schema({
   category: { type: String, enum: ['aesthetics', 'food', 'games', 'animals', 'misc'], required: true, default: 'misc', lowercase: true }
 }, { timestamps: true, toJSON: { virtuals: true } })
 
+
 AlbumSchema.virtual('creator', {
   localField: 'creatorId',
   ref: 'Account',
   foreignField: '_id',
   justOne: true
+})
+
+// NOTE this virtual looks the other way, and counts them
+AlbumSchema.virtual('memberCount', { // must also be populated
+  localField: '_id',
+  ref: 'AlbumMember',
+  foreignField: 'albumId',
+  count: true
 })

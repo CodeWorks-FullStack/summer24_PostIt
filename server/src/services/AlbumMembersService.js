@@ -15,7 +15,8 @@ class AlbumMembersService {
     return albumMembers
   }
   async getAlbumMembersByAccountId(accountId) {
-    const albumMembers = await dbContext.AlbumMembers.find({ accountId }).populate('album')
+    // const albumMembers = await dbContext.AlbumMembers.find({ accountId }).populate('album')
+    const albumMembers = await dbContext.AlbumMembers.find({ accountId }).populate({ path: 'album', populate: { path: 'creator memberCount' } })
     return albumMembers
   }
 
