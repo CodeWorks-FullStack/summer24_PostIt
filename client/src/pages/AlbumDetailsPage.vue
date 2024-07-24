@@ -15,6 +15,9 @@ const route = useRoute()
 const album = computed(()=> AppState.activeAlbum)
 const albumPictures = computed(()=> AppState.albumPictures)
 const albumMemberProfiles = computed(()=> AppState.albumProfiles)
+const identity = computed(()=> AppState.identity)
+
+const isAMember = computed(()=> AppState.albumProfiles.find(amp => amp.accountId == AppState.account.id))
 
 onMounted(()=>{
   getAlbumById()
@@ -49,6 +52,16 @@ async function getAlbumMembersForAlbum(){
     logger.error(error)
   }
 }
+
+async function joinAsAlbumMember(){
+  try {
+    const memberData = {albumId: route.params.albumId}
+    await albumMembersService.joinAsAlbumMember(memberData)
+  } catch (error) {
+    Pop.toast("Could NOT join Album 👺", 'error', 'center')
+    logger.error(error)
+  }
+}
 </script>
 
 
@@ -78,7 +91,14 @@ async function getAlbumMembersForAlbum(){
 
     <section class="row">
       <div class="col-md-3">
-        <section class="row g-2">
+        <section v-if="album" class="row g-2">
+          <div v-if="isAMember" class="col-12 text-info fw-bold">You're already a member!</div>
+          <div class="col-7">
+            Member Count {{ album.memberCount }}
+          </div>
+          <button :disabled="!identity || isAMember != undefined" @click="joinAsAlbumMember()" class="col-5 btn btn-warning">
+            <i class="mdi mdi-heart"></i> join
+          </button>
 
           <!-- SECTION album member profile pictures -->
           <div class="col-4" v-for="albumMember in albumMemberProfiles" :key="albumMember.id">

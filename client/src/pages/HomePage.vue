@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { albumsService } from '../services/AlbumsService.js';
 import { logger } from '../utils/Logger.js';
 import Pop from '../utils/Pop.js';
@@ -8,7 +8,16 @@ import AlbumArticle from '../components/AlbumArticle.vue';
 import ModalWrapper from '../components/ModalWrapper.vue';
 import CreateAlbumForm from '../components/CreateAlbumForm.vue';
 
-const albums = computed(()=> AppState.albums)
+const categoryFilter = ref('all')
+
+const albums = computed(()=> {
+  if(categoryFilter.value == 'all'){
+    return AppState.albums
+  }
+  return AppState.albums.filter(album => album.category == categoryFilter.value)
+})
+
+const categories = ['all', 'games', 'animals', 'aesthetics', 'misc']
 
 onMounted(()=>{
   getAllAlbums()
@@ -30,16 +39,24 @@ async function getAllAlbums(){
   <div class="container">
 
 
-    <section class="row g-2 justify-content-end">
+    <section class="row g-2 justify-content-end mb-4">
       <div class="col-12">
         <h2>Find your interest</h2>
         <hr/>
       </div>
 
       <!-- SECTION category buttons -->
+       <div class="col-4" v-for="category in categories" :key="category">
+         <button @click="categoryFilter = category"  class=" w-100 text-capitalize btn btn-success p-4 rounded text-center text-light fw-bold">
+           {{ category }}
+          </button>
+        </div>
+
        <!-- SECTION create Button -->
-        <div data-bs-target="#create-album-modal" data-bs-toggle="modal" role="button" class="col-4 btn btn-success p-4 rounded text-center text-light fw-bold">
-          Create +
+        <div class="col-4">
+          <div data-bs-target="#create-album-modal" data-bs-toggle="modal" role="button" class="w-100 btn btn-info p-4 rounded text-center text-light fw-bold">
+            Create +
+          </div>
         </div>
 
     </section>

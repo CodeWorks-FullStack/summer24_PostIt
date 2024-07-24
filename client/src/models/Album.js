@@ -14,6 +14,8 @@ export class Album {
     this.creator = data.creator ? new Account(data.creator) : null
     this.createdAt = new Date(data.createdAt)
     this.updatedAt = new Date(data.updatedAt)
+    // TODO added
+    this.memberCount = data.memberCount
   }
 
   get backgroundImg() {
