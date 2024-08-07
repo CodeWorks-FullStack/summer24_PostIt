@@ -61,7 +61,7 @@ export class SocketHandler {
 
   on(event, fn) {
     const ctx = this
-    this.socket?.on(event, function() {
+    this.socket?.on(event, function () {
       try {
         // @ts-ignore
         fn.call(ctx, ...arguments)

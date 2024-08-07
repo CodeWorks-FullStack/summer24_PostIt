@@ -3,6 +3,7 @@ import { albumsService } from "../services/AlbumsService.js";
 import BaseController from "../utils/BaseController.js";
 import { picturesService } from "../services/PicturesService.js";
 import { albumMemberService } from "../services/AlbumMembersService.js";
+import { socketProvider } from "../SocketProvider.js";
 
 
 
@@ -26,6 +27,8 @@ export class AlbumsController extends BaseController {
       albumData.creatorId = user.id // add the user id as the creator, from their bearer token
       const album = await albumsService.createAlbum(albumData)
       response.send(album)
+
+      socketProvider.messageAll('CREATED_ALBUM')
     } catch (error) {
       next(error)
     }

@@ -20,7 +20,7 @@ const albumData = ref({
 async function createAlbum() {
   try {
     const newAlbum = await albumsService.createAlbum(albumData.value)
-    Pop.success(`You did it yay! you created ${newAlbum.title} `)
+    // Pop.success(`You did it yay! you created ${newAlbum.title} `)
     resetForm()
     Modal.getOrCreateInstance('#create-album-modal').hide()
     // router.push({name: 'Album Details', params: {albumId: newAlbum.id}})
