@@ -14,3 +14,10 @@ PictureSchema.virtual('creator', {
   foreignField: '_id',
   justOne: true
 })
+
+PictureSchema.virtual('album', {
+  localField: 'albumId',
+  ref: 'Album',
+  foreignField: '_id',
+  justOne: true
+})
