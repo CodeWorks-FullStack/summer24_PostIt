@@ -17,8 +17,8 @@ class PicturesService {
   async createPicture(pictureData) {
     const response = await api.post('api/pictures', pictureData)
     logger.log('✨🤠📡', response.data)
-    const newPicture = new Picture(response.data)
-    AppState.albumPictures.push(newPicture)
+    // const newPicture = new Picture(response.data)
+    // AppState.albumPictures.push(newPicture) websocket handles this now
   }
 
 }

@@ -1,6 +1,6 @@
 import { SocketHandler } from "../utils/SocketHandler.js";
 
-class TestHandler extends SocketHandler {
+class RoomHandler extends SocketHandler {
 
   constructor() {
     super(true)
@@ -27,4 +27,4 @@ class TestHandler extends SocketHandler {
 
 }
 
-export const testHandler = new TestHandler()
+export const roomHandler = new RoomHandler()

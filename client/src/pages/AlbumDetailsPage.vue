@@ -3,30 +3,37 @@ import { computed, onMounted } from 'vue';
 import { albumsService } from '../services/AlbumsService.js';
 import { logger } from '../utils/Logger.js';
 import Pop from '../utils/Pop.js';
-import { useRoute } from 'vue-router';
+import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import { AppState } from '../AppState.js';
 import CreatePictureForm from '../components/CreatePictureForm.vue';
 import ModalWrapper from '../components/ModalWrapper.vue';
 import { picturesService } from '../services/PicturesService.js';
 import { albumMembersService } from '../services/AlbumMembersService.js';
+import { roomHandler } from '../handlers/RoomHandler.js';
 
 const route = useRoute()
 
-const album = computed(()=> AppState.activeAlbum)
-const albumPictures = computed(()=> AppState.albumPictures)
-const albumMemberProfiles = computed(()=> AppState.albumProfiles)
-const identity = computed(()=> AppState.identity)
+const album = computed(() => AppState.activeAlbum)
+const albumPictures = computed(() => AppState.albumPictures)
+const albumMemberProfiles = computed(() => AppState.albumProfiles)
+const identity = computed(() => AppState.identity)
 
-const isAMember = computed(()=> AppState.albumProfiles.find(amp => amp.accountId == AppState.account.id))
+const isAMember = computed(() => AppState.albumProfiles.find(amp => amp.accountId == AppState.account?.id))
 
-onMounted(()=>{
+onMounted(() => {
   getAlbumById()
   getAlbumPictures()
   getAlbumMembersForAlbum()
+
+  roomHandler.emit('JOIN_ROOM', `album-${route.params.albumId}`)
+})
+
+onBeforeRouteLeave(() => {
+  roomHandler.emit('LEAVE_ROOM', `album-${route.params.albumId}`)
 })
 
 
-async function getAlbumById(){
+async function getAlbumById() {
   try {
     await albumsService.getAlbumById(route.params.albumId)
   } catch (error) {
@@ -35,7 +42,7 @@ async function getAlbumById(){
   }
 }
 
-async function getAlbumPictures(){
+async function getAlbumPictures() {
   try {
     await picturesService.getAlbumPictures(route.params.albumId)
   } catch (error) {
@@ -44,7 +51,7 @@ async function getAlbumPictures(){
   }
 }
 
-async function getAlbumMembersForAlbum(){
+async function getAlbumMembersForAlbum() {
   try {
     await albumMembersService.getAlbumMembersForAlbum(route.params.albumId)
   } catch (error) {
@@ -53,9 +60,9 @@ async function getAlbumMembersForAlbum(){
   }
 }
 
-async function joinAsAlbumMember(){
+async function joinAsAlbumMember() {
   try {
-    const memberData = {albumId: route.params.albumId}
+    const memberData = { albumId: route.params.albumId }
     await albumMembersService.joinAsAlbumMember(memberData)
   } catch (error) {
     Pop.toast("Could NOT join Album 👺", 'error', 'center')
@@ -96,13 +103,14 @@ async function joinAsAlbumMember(){
           <div class="col-7">
             Member Count {{ album.memberCount }}
           </div>
-          <button :disabled="!identity || isAMember != undefined" @click="joinAsAlbumMember()" class="col-5 btn btn-warning">
+          <button :disabled="!identity || isAMember != undefined" @click="joinAsAlbumMember()"
+            class="col-5 btn btn-warning">
             <i class="mdi mdi-heart"></i> join
           </button>
 
           <!-- SECTION album member profile pictures -->
           <div class="col-4" v-for="albumMember in albumMemberProfiles" :key="albumMember.id">
-            <img class="img-fluid"  :src="albumMember.profile.picture" alt="it's a face">
+            <img class="img-fluid" :src="albumMember.profile.picture" alt="it's a face">
           </div>
 
         </section>
@@ -110,29 +118,31 @@ async function joinAsAlbumMember(){
       <div class="col-md-9">
         <section class="masonry">
 
-          <img v-for="picture in albumPictures" :key="picture.id" :src="picture.imgUrl" :alt="picture.imgUrl" class="rounded img-fluid" :title="`posted by ${picture.creator.name}`">
+          <img v-for="picture in albumPictures" :key="picture.id" :src="picture.imgUrl" :alt="picture.imgUrl"
+            class="rounded img-fluid" :title="`posted by ${picture.creator.name}`">
 
         </section>
       </div>
     </section>
 
     <ModalWrapper id="create-picture-modal">
-      <CreatePictureForm/>
+      <CreatePictureForm />
     </ModalWrapper>
-    <button data-bs-target="#create-picture-modal" data-bs-toggle="modal" class="btn btn-info add-image-fab"><i class="mdi mdi-plus"></i>Add <i class="mdi mdi-image"></i></button>
+    <button data-bs-target="#create-picture-modal" data-bs-toggle="modal" class="btn btn-info add-image-fab"><i
+        class="mdi mdi-plus"></i>Add <i class="mdi mdi-image"></i></button>
   </div>
 </template>
 
 
 <style lang="scss" scoped>
-.album-header{
+.album-header {
   height: 40vh;
   background-image: v-bind('album?.backgroundImg');
   background-size: cover;
   background-position: center;
 }
 
-.album-creator-profile{
+.album-creator-profile {
   height: 75px;
   aspect-ratio: 1/1;
   border-radius: 500px;
@@ -140,17 +150,18 @@ async function joinAsAlbumMember(){
   object-position: center;
 }
 
-.add-image-fab{
+.add-image-fab {
   position: fixed;
   bottom: 2em;
   right: 2em;
 }
 
-.masonry{
+.masonry {
   columns: 150px;
   column-gap: 1em;
   column-fill: balance;
-  img{
+
+  img {
     margin-bottom: 1em;
   }
 }
