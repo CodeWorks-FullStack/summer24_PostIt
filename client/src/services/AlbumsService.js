@@ -10,7 +10,7 @@ class AlbumsService {
     const response = await api.post('api/albums', albumData)
     logger.log('✨🖼️📡', response.data)
     const newAlbum = new Album(response.data)
-    AppState.albums.unshift(newAlbum)
+    // AppState.albums.unshift(newAlbum) websocket is handling updating appstate
     return newAlbum
   }
   async getAlbumById(albumId) {

@@ -28,7 +28,7 @@ export class AlbumsController extends BaseController {
       const album = await albumsService.createAlbum(albumData)
       response.send(album)
 
-      socketProvider.messageAll('CREATED_ALBUM')
+      socketProvider.messageAll('CREATED_ALBUM', album)
     } catch (error) {
       next(error)
     }
